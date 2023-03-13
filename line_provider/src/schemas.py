@@ -13,17 +13,10 @@ class EventState(str, Enum):
 
 
 class CreateEventSchema(BaseModel):
-    coefficient: decimal.Decimal
-    deadline: int
+    coefficient: decimal.Decimal = Field(ge=0.00, decimal_places=2)
+    deadline: int = Field(gt=1000000000)
     state: EventState | None = EventState.NEW
 
 
 class EventSchema(CreateEventSchema):
     event_id: uuid.UUID = Field(default_factory=uuid.uuid4)
-
-
-e1 = CreateEventSchema(coefficient=1.22, deadline=12, state=EventState.NEW)
-e2 = CreateEventSchema(coefficient=1.55, deadline=152, state=EventState.IN_PROGRESS)
-
-e1 = e1.copy(update=dict(e2))
-print(e1)
