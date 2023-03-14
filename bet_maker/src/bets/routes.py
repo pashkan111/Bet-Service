@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from .managers import BetManager
 from .schemas import MakeBetSchema
-from .services import get_bet_data
+from .services import get_available_events, get_bet_data
 
 router = APIRouter(prefix='/bets')
 
@@ -18,3 +18,9 @@ async def create_bet(data: MakeBetSchema):
     bet_data = await get_bet_data(data)
     created_bet = await BetManager.create_bet(bet_data)
     return created_bet
+
+
+@router.get('/events')
+async def get_events():
+    events = await get_available_events()
+    return events

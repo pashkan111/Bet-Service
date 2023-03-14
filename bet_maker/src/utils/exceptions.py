@@ -1,14 +1,10 @@
 class AbstractException(Exception):
     detail: str
 
-    def __init__(self, exc_info: str, msg: str | None = None):
-        if msg is not None:
-            self.detail = msg
-        self.exc_info = exc_info
-        self.args = (self.exc_info,)
-
-    def __str__(self) -> str:
-        return f"{self.detail}. Args = {self.args}"
+    def __init__(self, detail: str | None = None):
+        if detail:
+            self.detail = detail
+        super().__init__(detail)
 
 
 class ClientError(AbstractException):

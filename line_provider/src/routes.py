@@ -4,12 +4,15 @@ from . import schemas
 from .exceptions import EventNotFoundException
 
 events = {
-    1: schemas.EventSchema(coefficient=1.77, deadline=169675645342, event_id=1),
-    2: schemas.EventSchema(coefficient=1.56, deadline=169675645333, event_id=2),
-    3: schemas.EventSchema(coefficient=3.66, deadline=169675645366, event_id=3),
+    1: schemas.EventSchema(coefficient=1.77, deadline=1696756453, event_id=1),
+    2: schemas.EventSchema(coefficient=1.56, deadline=1696756483, event_id=2),
+    3: schemas.EventSchema(coefficient=3.66, deadline=1696756753, event_id=3),
+    4: schemas.EventSchema(coefficient=3.66, deadline=1023333833, event_id=4),
+    5: schemas.EventSchema(coefficient=3.66, deadline=1699999953, event_id=5),
 }
 
 event_router = APIRouter(prefix='/events')
+
 
 
 @event_router.post("/")
@@ -37,7 +40,7 @@ async def update_event(event_id: int, event: schemas.CreateEventSchema):
 
 @event_router.get("/{event_id}")
 async def get_event(event_id: int):
-    event_id.append(1)
+    # event_id.append(1)
     db_event = events.get(event_id)
     if not db_event:
         raise EventNotFoundException

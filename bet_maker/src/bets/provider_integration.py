@@ -1,19 +1,20 @@
-
 from config import settings
 from src.utils import AsyncRESTFetcher
 
+from .constants import EventSchema, EventsSchema
 
-async def get_events():
+
+async def get_events() -> EventsSchema:
     fetcher = AsyncRESTFetcher(
         settings.PROVEDER_BASE_URL, '/events'
     )
     events = await fetcher.make_request()
-    return events
+    return EventsSchema(__root__=events)
 
 
-async def get_event(event_id: int):
+async def get_event(event_id: int) -> EventSchema:
     fetcher = AsyncRESTFetcher(
         settings.PROVEDER_BASE_URL, f'/events/{event_id}'
     )
     event = await fetcher.make_request()
-    return event
+    return EventSchema(**event)
