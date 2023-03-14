@@ -19,4 +19,4 @@ class CreateEventSchema(BaseModel):
 
 
 class EventSchema(CreateEventSchema):
-    event_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    event_id: int

@@ -17,5 +17,5 @@ class AbstractHTTPException(HTTPException):
 
 
 class EventNotFoundException(AbstractHTTPException):
-    status = status.HTTP_404_NOT_FOUND
+    status_code = status.HTTP_404_NOT_FOUND
     detail = 'Event with this id has not been found'
