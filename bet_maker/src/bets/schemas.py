@@ -26,3 +26,8 @@ class MakeBetSchema(BaseModel):
     """Schema for create bet through api"""
     event_id: int
     price: decimal.Decimal = Field(ge=1.00, decimal_places=2)
+    
+    
+class CallbackUpdateStateSchema(BaseModel):
+    event_id: int
+    event_state: EventState
