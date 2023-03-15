@@ -9,4 +9,6 @@ def error_handler(func):
             raise api_exceptions.BadRequest(e.detail)
         except exceptions.RemoteServerError as e:
             raise api_exceptions.RemoteServiceError(e.detail)
+        except Exception:
+            raise api_exceptions.ServerError
     return wrapper

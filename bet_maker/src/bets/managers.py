@@ -6,6 +6,9 @@ from .models import Bet
 from .schemas import BetCreateSchema, BetSchema, CallbackUpdateStateSchema
 
 class BetManager:
+    """
+    Contains main operations with Bet model in database
+    """
     model = Bet
 
     @classmethod

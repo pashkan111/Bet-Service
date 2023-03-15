@@ -29,5 +29,6 @@ class MakeBetSchema(BaseModel):
     
     
 class CallbackUpdateStateSchema(BaseModel):
+    """Schema for callback route that updates bet's event_status"""
     event_id: int
     event_state: EventState = Field(alias='state')

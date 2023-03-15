@@ -20,9 +20,7 @@ class Bet(Base):
     event_state = sa.Column(sa.Enum(EventState), default=EventState.NEW)
     coefficient = sa.Column(sa.Numeric(precision=10, scale=2), nullable=False)
     price = sa.Column(sa.Numeric(precision=10, scale=2), nullable=False)
-    created_at = sa.Column(
-        sa.DateTime(timezone=True), default=datetime.datetime.now
-        )
+    created_at = sa.Column(sa.DateTime(timezone=True), default=datetime.datetime.now)
 
     def __repr__(self):
         return f'<Bet {self.bet_id}>'

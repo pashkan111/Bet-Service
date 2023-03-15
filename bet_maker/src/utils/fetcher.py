@@ -7,6 +7,9 @@ from . import exceptions
 
 
 class AsyncRESTFetcher:
+    """
+    Base class for constructing query to remote server and handling exceptions
+    """
     base_url: str
     endpoint: str
     method: str = 'GET'

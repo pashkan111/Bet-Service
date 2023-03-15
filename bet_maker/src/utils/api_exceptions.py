@@ -24,3 +24,8 @@ class BadRequest(AbstractHTTPException):
 class RemoteServiceError(AbstractHTTPException):
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     detail = 'Remote Service Error'
+
+
+class ServerError(AbstractHTTPException):
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    detail = 'Server Error'
