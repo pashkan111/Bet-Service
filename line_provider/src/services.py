@@ -1,5 +1,5 @@
 from .schemas import EventSchema
-from .utils import send_callback
+from .callbacks import send_callback
 from config import settings
 import urllib.parse
 

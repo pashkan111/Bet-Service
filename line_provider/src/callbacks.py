@@ -9,7 +9,6 @@ async def send_callback(data: dict, callback_url: str, method: str | None='POST'
         'statuses': [500, 502, 503, 504],
         'exceptions': [aiohttp.ClientConnectionError]
     }
-    print(data)
     async with aiohttp.ClientSession() as session:
         client = RetryClient(session, retries=ExponentialRetry(**retry_options))
         async with client.request(method=method, url=callback_url, json=data) as response:
