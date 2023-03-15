@@ -1,12 +1,11 @@
 from asyncio import current_task
 from typing import AsyncGenerator
 
+from config import settings
 from sqlalchemy.ext.asyncio import (AsyncSession, async_scoped_session,
                                     create_async_engine)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
-from config import settings
 
 Base = declarative_base()
 
