@@ -30,4 +30,4 @@ class MakeBetSchema(BaseModel):
     
 class CallbackUpdateStateSchema(BaseModel):
     event_id: int
-    event_state: EventState
+    event_state: EventState = Field(alias='state')

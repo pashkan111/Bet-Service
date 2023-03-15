@@ -1,5 +1,4 @@
 import decimal
-import uuid
 from enum import Enum
 
 from pydantic import BaseModel, Field
@@ -13,9 +12,15 @@ class EventState(str, Enum):
 
 
 class CreateEventSchema(BaseModel):
-    coefficient: decimal.Decimal = Field(ge=0.00, decimal_places=2)
+    coefficient: decimal.Decimal = Field(ge=1.00, decimal_places=2)
     deadline: int = Field(gt=1000000000)
     state: EventState | None = EventState.NEW
+
+
+class UpdateEventSchema(BaseModel):
+    coefficient: decimal.Decimal | None = Field(ge=1.00, decimal_places=2, default=None)
+    deadline: int | None = Field(gt=1000000000, default=None)
+    state: EventState | None = None
 
 
 class EventSchema(CreateEventSchema):
