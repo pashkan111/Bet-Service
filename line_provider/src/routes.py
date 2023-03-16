@@ -39,8 +39,7 @@ async def update_event(
         raise EventNotFoundException
     db_event = db_event.copy(update=event.dict(exclude_unset=True))
     events[event_id] = db_event
-    await send_event_state_to_bet_maker(db_event)
-    # background_task.add_task(send_event_state_to_bet_maker, db_event)
+    background_task.add_task(send_event_state_to_bet_maker, db_event)
     return db_event
 
 

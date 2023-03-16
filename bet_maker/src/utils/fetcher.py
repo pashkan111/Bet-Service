@@ -8,18 +8,25 @@ from . import exceptions
 
 class AsyncRESTFetcher:
     """
-    Base class for constructing query to remote server and handling exceptions
+    Base class for making query to remote server and handling exceptions
     """
     base_url: str
     endpoint: str
     method: str = 'GET'
-    retry_attemps: int = 5
 
     def __init__(self, base_url, endpoint, method=None):
         self.base_url = base_url
         self.endpoint = endpoint
         if method:
             self.method = method
+            
+    def _get_retry_options(self):
+        return {
+            'attempts': 5,
+            'start_timeout': 1,
+            'statuses': [500, 502, 503, 504],
+            'exceptions': [aiohttp.ClientConnectionError]
+        }
 
     def _get_url(self) -> str:
         return urllib.parse.urljoin(self.base_url, self.endpoint)
@@ -27,12 +34,7 @@ class AsyncRESTFetcher:
     async def _fetch(
         self, url: str, data: dict | None = None
     ):
-        retry_options = {
-            'attempts': self.retry_attemps,
-            'start_timeout': 1,
-            'statuses': [500, 502, 503, 504],
-            'exceptions': [aiohttp.ClientConnectionError]
-        }
+        retry_options = self._get_retry_options()
         try:
             async with aiohttp.ClientSession() as session:
                 client = RetryClient(session, retries=ExponentialRetry(**retry_options))

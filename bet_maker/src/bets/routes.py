@@ -23,6 +23,6 @@ async def create_bet(data: MakeBetSchema, session: AsyncSession = Depends(get_se
 
 
 @bets_router.get('/events')
-async def get_events(session: AsyncSession = Depends(get_session)):
+async def get_events():
     events = await get_available_events()
     return events
