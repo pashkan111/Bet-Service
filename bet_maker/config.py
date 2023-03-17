@@ -7,6 +7,12 @@ class Settings(pydantic.BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PORT: int
     POSTGRES_DB: str
+    
+    TEST_POSTGRES_USER: str
+    TEST_POSTGRES_PASSWORD: str
+    TEST_POSTGRES_HOST: str
+    TEST_POSTGRES_PORT: int
+    TEST_POSTGRES_DB: str
 
     PROVIDER_BASE_URL: str
 

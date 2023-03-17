@@ -15,4 +15,4 @@ The Bet microservice is responsible for managing bets in the system. REST API do
 **Launch Project.**
 
 - *docker-compose up -d*. Line Provider service starts available on url *http://localhost:8002*, and Bet service on *http://localhost:8003*
-- *pytest*. Tests available in Line Provider service.
+- *pytest tests*. Tests available in both services.
