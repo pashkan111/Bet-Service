@@ -1,5 +1,8 @@
-from fastapi.routing import APIRouter
 from fastapi import BackgroundTasks
+from fastapi.routing import APIRouter
+from src.event_bus.rabbit_producer import publish_message
+from src.event_bus.schemas import EventChangedMessage
+
 from . import schemas
 from .exceptions import EventNotFoundException
 from .services import send_event_state_to_bet_maker
@@ -32,14 +35,15 @@ async def get_events():
 async def update_event(
     event_id: int, 
     event: schemas.UpdateEventSchema,
-    background_task: BackgroundTasks,
+    # background_task: BackgroundTasks,
     ):
     db_event = events.get(event_id)
     if not db_event:
         raise EventNotFoundException
     db_event = db_event.copy(update=event.dict(exclude_unset=True))
     events[event_id] = db_event
-    background_task.add_task(send_event_state_to_bet_maker, db_event)
+    await publish_message(EventChangedMessage(data=db_event), 'bet_service')
+    # background_task.add_task(send_event_state_to_bet_maker, db_event)
     return db_event
 
 

@@ -17,6 +17,7 @@ uvicorn = "^0.21.0"
 python-dotenv = "^1.0.0"
 pytest-asyncio = "^0.20.3"
 httpx = "^0.23.3"
+aio-pika = "^9.0.5"
 
 
 [build-system]
