@@ -1,4 +1,3 @@
-import asyncio
 import json
 
 from pydantic import BaseModel
@@ -20,10 +19,8 @@ class EventChangedHandler(AbstractMessageHandler):
 
     @classmethod
     async def handle_message(cls, message: dict):
-        print(message)
         data = cls.schema(**message['data'])
         await BetManager.update_bets_event_state(data)
-        print(data)
         print('EVENT UPDAATED')
 
 
@@ -40,7 +37,7 @@ class MessageHandler:
             loaded_msg = json.loads(msg.body)
             handler = self._get_handler(loaded_msg['message_id'])
             await handler.handle_message(loaded_msg)
-            await asyncio.sleep(0.1)
+            await msg.reject()
 
 
 message_handler = MessageHandler()

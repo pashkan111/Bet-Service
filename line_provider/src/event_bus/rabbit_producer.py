@@ -20,16 +20,35 @@ async def publish_message(
     async for connection in get_connection():
         channel = await connection.channel()
         
-        # exchange = await channel.declare_exchange(ExchangeType.DIRECT)
-        # queue = await channel.declare_queue(auto_delete=True)
-
-        # await queue.bind(exchange, routing_key)
-
-        sended = await channel.default_exchange.publish(
+        exchange = await channel.declare_exchange(
+            'NEW',
+            ExchangeType.DIRECT
+            )
+        
+        sended = await exchange.publish(
             aio_pika.Message(
                 body=message.json().encode('utf-8'),
                 content_type="text/plain",
+                delivery_mode=aio_pika.DeliveryMode.PERSISTENT
             ),
             routing_key,
         )
+
+        # sended2 = await channel.default_exchange.publish(
+        #     aio_pika.Message(
+        #         body=message.json().encode('utf-8'),
+        #         content_type="text/plain",
+        #     ),
+        #     'test_queue',
+        # )
+
+        # sended3 = await channel.default_exchange.publish(
+        #     aio_pika.Message(
+        #         body=message.json().encode('utf-8'),
+        #         content_type="text/plain",
+        #     ),
+        #     'test_queue1',
+        # )
         print(sended)
+        # print(sended2)
+        # print(sended3)
