@@ -1,11 +1,10 @@
-from fastapi import BackgroundTasks
+from config import settings
 from fastapi.routing import APIRouter
-from src.event_bus.rabbit_producer import publish_message
-from src.event_bus.schemas import EventChangedMessage
+from src.event_bus.schemas import EventChangedMessage, EventCreatedMessage
 
 from . import schemas
 from .exceptions import EventNotFoundException
-from .services import send_event_state_to_bet_maker
+from .services import notify
 
 events = {
     1: schemas.EventSchema(coefficient=1.77, deadline=1696756453, event_id=1),
@@ -23,6 +22,7 @@ async def create_event(event: schemas.CreateEventSchema):
     event_id = len(events) + 1
     db_event = schemas.EventSchema(**event.dict(), event_id=event_id)
     events[event_id] = db_event
+    await notify(EventCreatedMessage(data=db_event), routing_key=settings.BET_MAKER_EVENTS_ROUTING_KEY)
     return db_event
 
 
@@ -33,17 +33,17 @@ async def get_events():
 
 @event_router.patch("/{event_id}")
 async def update_event(
-    event_id: int, 
+    event_id: int,
     event: schemas.UpdateEventSchema,
-    # background_task: BackgroundTasks,
-    ):
+):
     db_event = events.get(event_id)
     if not db_event:
         raise EventNotFoundException
+
     db_event = db_event.copy(update=event.dict(exclude_unset=True))
     events[event_id] = db_event
-    await publish_message(EventChangedMessage(data=db_event), 'bet_service')
-    # background_task.add_task(send_event_state_to_bet_maker, db_event)
+
+    await notify(EventChangedMessage(data=db_event), settings.BET_MAKER_EVENTS_ROUTING_KEY)
     return db_event
 
 

@@ -1,6 +1,21 @@
 version: "3.9"
 
 services:
+  rabbitmq:
+    image: rabbitmq:management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "bet_service"
+      RABBITMQ_DEFAULT_PASS: "password"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_logs:/var/log/rabbitmq
+    networks:
+      - intercom
+
   bet_maker:
     build:
       context: ./bet_maker
@@ -10,6 +25,9 @@ services:
       - "8003:8003"
     depends_on:
       - db
+      - rabbitmq
+    networks:
+      - intercom
 
   rabbit_worker:
     build:
@@ -20,6 +38,8 @@ services:
       - "8004:8003"
     depends_on:
       - rabbitmq
+    networks:
+      - intercom
 
   line_provider:
     build:
@@ -30,6 +50,8 @@ services:
       - "8002:8002"
     depends_on:
       - rabbitmq
+    networks:
+      - intercom
 
   db:
     image: postgres
@@ -41,24 +63,15 @@ services:
     ports:
       - 5438:5432
     volumes:
-      - db_data:/var/lib/postgresql/data/
-
-  rabbitmq:
-    image: rabbitmq:latest
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_ERLANG_COOKIE: "mycookie"
-      RABBITMQ_DEFAULT_USER: "bet_service"
-      RABBITMQ_DEFAULT_PASS: "password"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-      - rabbitmq_logs:/var/log/rabbitmq
-
+      - ./db_data:/var/lib/postgresql/data/
+    networks:
+      - intercom
 
 volumes:
   db_data:
   rabbitmq_data:
   rabbitmq_logs:
+
+networks:
+  intercom:
+    external: True

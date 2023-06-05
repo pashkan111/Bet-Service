@@ -14,7 +14,10 @@ class Settings(pydantic.BaseSettings):
     TEST_POSTGRES_PORT: int
     TEST_POSTGRES_DB: str
 
-    PROVIDER_BASE_URL: str
+    RABBITMQ_USER: str
+    RABBITMQ_PASSWORD: str
+    RABBITMQ_EXCHANGE: str
+    RABBITMQ_EVENTS_QUEUE: str
 
     class Config:
         env_file = ".env"

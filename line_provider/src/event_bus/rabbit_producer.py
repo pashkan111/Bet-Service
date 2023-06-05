@@ -1,14 +1,17 @@
+import logging
 from collections.abc import AsyncGenerator
 
 import aio_pika
-from aio_pika import ExchangeType
+from config import settings
 
 from .schemas import BaseMessage
+
+logger = logging.getLogger(__name__)
 
 
 async def get_connection() -> AsyncGenerator[aio_pika.RobustConnection, None]:
     connection = await aio_pika.connect_robust(
-        f"amqp://bet_service:password@rabbitmq/"
+        f"amqp://{settings.RABBITMQ_USER}:{settings.RABBITMQ_PASSWORD}@rabbitmq/"
     )
     async with connection:
         yield connection
@@ -16,16 +19,13 @@ async def get_connection() -> AsyncGenerator[aio_pika.RobustConnection, None]:
 
 async def publish_message(
         message: BaseMessage, routing_key: str
-    ):
+):
     async for connection in get_connection():
+        exchange_name = settings.BET_MAKER_EXCHANGE
         channel = await connection.channel()
-        
-        exchange = await channel.declare_exchange(
-            'NEW',
-            ExchangeType.DIRECT
-            )
-        
-        sended = await exchange.publish(
+        exchange = await channel.declare_exchange(exchange_name)
+
+        sended_message = await exchange.publish(
             aio_pika.Message(
                 body=message.json().encode('utf-8'),
                 content_type="text/plain",
@@ -33,22 +33,4 @@ async def publish_message(
             ),
             routing_key,
         )
-
-        # sended2 = await channel.default_exchange.publish(
-        #     aio_pika.Message(
-        #         body=message.json().encode('utf-8'),
-        #         content_type="text/plain",
-        #     ),
-        #     'test_queue',
-        # )
-
-        # sended3 = await channel.default_exchange.publish(
-        #     aio_pika.Message(
-        #         body=message.json().encode('utf-8'),
-        #         content_type="text/plain",
-        #     ),
-        #     'test_queue1',
-        # )
-        print(sended)
-        # print(sended2)
-        # print(sended3)
+        logger.info(f"Message {sended_message} sent to {exchange_name} with routing key {routing_key}")

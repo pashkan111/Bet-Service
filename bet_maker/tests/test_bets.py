@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import AsyncMock
+
+import pytest
 from src.bets.constants import EventSchema, EventState
 from src.utils.exceptions import ClientError
 
@@ -28,12 +29,12 @@ async def test_create_bet(async_client, test_data, monkeypatch):
 
 @pytest.mark.asyncio
 async def test_create_bet_with_unexisted_event(async_client, test_data, monkeypatch):
-    
+
     mocked_func = AsyncMock()
     monkeypatch.setattr('src.bets.services.get_event', mocked_func)
     msg = 'Event does not exist'
     mocked_func.side_effect = ClientError(msg)
-    
+
     payload = test_data[1]
     response_created = await async_client.post("/bets/", json=payload)
     assert response_created.status_code == 400

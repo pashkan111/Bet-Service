@@ -8,5 +8,12 @@ class BaseMessage(pydantic.BaseModel):
 
 
 class EventChangedMessage(BaseMessage):
+    """Message for change event"""
     message_id: int | None = 1001
+    data: EventSchema
+
+
+class EventCreatedMessage(BaseMessage):
+    """Message for create event"""
+    message_id: int | None = 1002
     data: EventSchema

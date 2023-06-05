@@ -1,16 +1,34 @@
 import decimal
+import enum
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-from .constants import EventState
+
+class EventState(str, enum.Enum):
+    NEW = "NEW"
+    IN_PROGRESS = "IN_PROGRESS"
+    WIN = "WIN"
+    LOST = "LOST"
+
+
+class EventSchema(BaseModel):
+    event_id: int
+    coefficient: decimal.Decimal
+    deadline: int
+    state: EventState
+
+    class Config:
+        orm_mode = True
+
+
+class EventsSchema(BaseModel):
+    __root__: list[EventSchema]
 
 
 class BetCreateSchema(BaseModel):
     event_id: int
-    event_state: EventState | None = EventState.NEW
-    coefficient: decimal.Decimal
     price: decimal.Decimal
 
 
@@ -22,13 +40,10 @@ class BetSchema(BetCreateSchema):
         orm_mode = True
 
 
-class MakeBetSchema(BaseModel):
-    """Schema for create bet through api"""
-    event_id: int
-    price: decimal.Decimal = Field(ge=1.00, decimal_places=2)
-    
-    
-class CallbackUpdateStateSchema(BaseModel):
-    """Schema for callback route that updates bet's event_status"""
-    event_id: int
-    event_state: EventState = Field(alias='state')
+class BetDetailedSchema(BetSchema):
+    bet_id: UUID
+    created_at: datetime | None = None
+    state: str
+
+    class Config:
+        orm_mode = True

@@ -7,10 +7,10 @@ class AbstractHTTPException(HTTPException):
     detail: str
 
     def __init__(
-            self,
-            detail: str | None = None,
-            headers: dict | None = None,
-        ):
+        self,
+        detail: str | None = None,
+        headers: dict | None = None,
+    ):
         if detail:
             self.detail = detail
         super().__init__(self.status_code, self.detail, headers)

@@ -1,6 +1,5 @@
 from db import init_db
 from fastapi import FastAPI
-from src.bets.message_handlers import message_handler
 from src.bets.routes import bets_router
 
 app = FastAPI(title='Bet Maker')
