@@ -16,7 +16,7 @@ class BetManager:
     model = Bet
 
     @classmethod
-    async def create_bet(
+    async def _create_bet(
         cls, data: schemas.BetCreateSchema, coefficient: Decimal
     ) -> schemas.BetSchema:
         async with Session() as session:
@@ -39,6 +39,12 @@ class BetManager:
             bets = [schemas.BetDetailedSchema.from_orm(bet) for bet in fetched_bets]
             return bets
 
+    @classmethod
+    async def place_bet(cls, data: schemas.BetCreateSchema) -> schemas.BetSchema:
+        event = await EventManager.get_event_by_id(data.event_id)
+        bet = await cls._create_bet(data, event.coefficient)
+        return bet
+
 
 class EventManager:
     """
@@ -57,7 +63,7 @@ class EventManager:
     @classmethod
     async def get_event_by_id(
         cls, event_id: int
-        ) -> schemas.EventSchema | None:
+    ) -> schemas.EventSchema | None:
         async with Session() as session:
             event = await session.get(cls.model, event_id)
             if event is None:
